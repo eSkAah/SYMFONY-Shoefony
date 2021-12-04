@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello StoreController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<p>L'id du produit est : {{id}}<p>
+<p>Le slug du produit est le suivant : {{slug}}<p>
+<p>L'ip client est : {{ipClient}}<p>
+<p>L'url de la page est : {{uri}}<p>
+
+<div class="example-wrapper">
+    <h1>Hello {{ controller_name }}! ✅</h1>
+
+    This friendly message is coming from:
+    <ul>
+        <li>Your controller at <code><a href="{{ 'C:/Users/Allan/Desktop/LP-DWMC/Symfony/shoefony/src/Controller/StoreController.php'|file_link(0) }}">src/Controller/StoreController.php</a></code></li>
+        <li>Your template at <code><a href="{{ 'C:/Users/Allan/Desktop/LP-DWMC/Symfony/shoefony/templates/store/index.html.twig'|file_link(0) }}">templates/store/index.html.twig</a></code></li>
+    </ul>
+</div>
+{% endblock %}
+
+
+
+
