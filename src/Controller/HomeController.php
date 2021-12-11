@@ -19,16 +19,18 @@ class HomeController extends AbstractController
     #[Route('/presentation', name: 'main_presentation', methods:['GET'])]
     public function presentation(): Response
     {
-        return $this->render('home/index.html.twig', [
+        return $this->render('home/presentation.html.twig', [
             
         ]);
     }
     
-    #[Route('/contact', name: 'store_contact')]
+   
+
+    #[Route('/contact', name: 'main_contact')]
     public function contact(): Response
     {
-        return $this->render('store/index.html.twig', [
-            'controller_name' => 'StoreController',
+        return $this->render('home/contact.html.twig', [
+    
         ]);
     }
 

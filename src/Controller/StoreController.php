@@ -18,15 +18,26 @@ class StoreController extends AbstractController
         $uri = $request->getUri();
         
 
-        return $this->render('store/index.html.twig', [
+
+        return $this->render('store/details.html.twig', [
             'controller_name' => 'StoreController',
             'id' => $id,
             'slug' => $slug,
             'ipClient' => $ipClient,
             'uri' => $uri,
-
         ]);
     }
+
+
+    #[Route('/products', name: 'store_products')]
+    public function products(): Response
+    {
+        return $this->render('store/index.html.twig', [
+            'controller_name' => 'StoreController',
+        ]);
+    }
+
+
 
 }
     
