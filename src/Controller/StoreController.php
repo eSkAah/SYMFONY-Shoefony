@@ -17,14 +17,10 @@ class StoreController extends AbstractController
         $ipClient = $request->server->get('REMOTE_ADDR');
         $uri = $request->getUri();
         
-
-
         return $this->render('store/details.html.twig', [
             'controller_name' => 'StoreController',
             'id' => $id,
             'slug' => $slug,
-            'ipClient' => $ipClient,
-            'uri' => $uri,
         ]);
     }
 
