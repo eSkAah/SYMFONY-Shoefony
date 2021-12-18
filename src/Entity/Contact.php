@@ -2,8 +2,8 @@
 
 namespace App\Entity;
 
-use App\Repository\ContactRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ContactRepository::class)
@@ -19,21 +19,31 @@ class Contact
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @var string
+     * @Assert\NotBlank(message="Ce champs ne peut pas être vide.")
      */
     private $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @var string
+     * @Assert\NotBlank(message="Ce champs ne peut pas être vide.")
      */
     private $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @var string
+     * @Assert\NotBlank(message="Ce champs ne peut pas être vide.")
+     * @Assert\Email(message="L'email {{ value }}) n'est pas valide.")
      */
     private $email;
 
     /**
      * @ORM\Column(type="text")
+     * @var string
+     * @Assert\NotBlank(message="Ce champs ne peut pas être vide.")
+     * @Assert\Length(min="25", minMessage="Votre message doit contenir au minimum {{ limit }} caractères.")
      */
     private $message;
 

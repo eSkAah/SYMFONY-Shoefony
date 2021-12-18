@@ -19,7 +19,13 @@
                     </p>
                 </div>
             </div>
-            <form>
+
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
                 {{ form_start(form) }}  
                     <div class="form-group">
                         {{ form_errors(form.firstName) }}
@@ -48,7 +54,7 @@
                     <button type="submit" class="btn btn-info">Envoyer mon message</button>
 
                 {{ form_end(form) }}
-            </form>
+           
 
             <hr/>
 {% endblock %}
