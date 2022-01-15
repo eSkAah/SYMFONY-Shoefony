@@ -4,22 +4,23 @@ namespace App\Controller;
 
 use App\Entity\Contact;
 use App\Form\ContactType;
+use App\Mailer\ContactMailer;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use App\Mailer\ContactMailer;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use Symfony\Component\Mailer\Transport\TransportInterface;
+use Symfony\Component\Routing\Annotation\Route;
 
 class HomeController extends AbstractController
 {
     private ContactMailer $mailer;
+    private $em;
 
-    public function __construct(ContactMailer $mailer){
+    public function __construct(EntityManagerInterface $em , ContactMailer $mailer){
         $this->mailer= $mailer;
+        $this->em = $em;
     }
-
 
     #[Route('/', name: 'main_homepage', methods:['GET'])]
     public function index(): Response
@@ -41,16 +42,16 @@ class HomeController extends AbstractController
     public function contact(Request $request): Response
     {
 
-        //Instanciation d'un nouveau Contact via notre Entity Contact::class
-        $contact = new Contact(); 
+        $contact = new Contact;
 
-        $form = $this->createForm(ContactType::class, $contact); 
-
-        //Demande au formulaire du framework d'interpreter la requete
+        $form = $this->createForm(ContactType::class, $contact);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-            
+
+            $this->em->persist($contact);
+            $this->em->flush();
+
             $this->addFlash('success', 'Merci, votre message a été pris en compte !');
             
             try{
@@ -58,11 +59,9 @@ class HomeController extends AbstractController
             }catch(TransportExceptionInterface){
                 
             }
-            
 
             return $this->redirectToRoute('main_contact');
         }
-
 
         return $this->render('home/contact.html.twig', [
             'form' => $form->createView()

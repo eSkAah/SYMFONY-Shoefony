@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass=ContactRepository::class)
+ * @ORM\Table(name="app_conctact")
  */
 class Contact
 {
@@ -15,21 +16,21 @@ class Contact
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
      */
-    private $id;
+    private int $id;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @var string
      * @Assert\NotBlank(message="Ce champs ne peut pas être vide.")
      */
-    private $firstname;
+    private string $firstname;
 
     /**
      * @ORM\Column(type="string", length=255)
      * @var string
      * @Assert\NotBlank(message="Ce champs ne peut pas être vide.")
      */
-    private $lastname;
+    private string $lastname;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -37,7 +38,7 @@ class Contact
      * @Assert\NotBlank(message="Ce champs ne peut pas être vide.")
      * @Assert\Email(message="L'email {{ value }}) n'est pas valide.")
      */
-    private $email;
+    private string $email;
 
     /**
      * @ORM\Column(type="text")
@@ -45,7 +46,16 @@ class Contact
      * @Assert\NotBlank(message="Ce champs ne peut pas être vide.")
      * @Assert\Length(min="25", minMessage="Votre message doit contenir au minimum {{ limit }} caractères.")
      */
-    private $message;
+    private string $message;
+
+    /**
+     * @ORM\Column(type="datetime")
+     */
+    private  $created_at;
+
+    public function __construct(){
+        $this->created_at = new \DateTime();
+    }
 
     public function getId(): ?int
     {
@@ -96,6 +106,18 @@ class Contact
     public function setMessage(string $message): self
     {
         $this->message = $message;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTime
+    {
+        return $this->created_at;
+    }
+
+    public function setCreatedAt(\DateTime $created_at): self
+    {
+        $this->created_at = $created_at;
 
         return $this;
     }
