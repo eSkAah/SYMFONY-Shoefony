@@ -41,28 +41,23 @@ class HomeController extends AbstractController
     #[Route('/contact', name: 'main_contact')]
     public function contact(Request $request): Response
     {
-
         $contact = new Contact;
 
         $form = $this->createForm(ContactType::class, $contact);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()){
-
             $this->em->persist($contact);
             $this->em->flush();
 
             $this->addFlash('success', 'Merci, votre message a été pris en compte !');
-            
             try{
                 $this->mailer->send($contact);
             }catch(TransportExceptionInterface){
                 
             }
-
             return $this->redirectToRoute('main_contact');
         }
-
         return $this->render('home/contact.html.twig', [
             'form' => $form->createView()
         ]);
