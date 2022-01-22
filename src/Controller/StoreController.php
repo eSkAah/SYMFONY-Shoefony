@@ -18,21 +18,6 @@ class StoreController extends AbstractController
         $this->em = $em;
     }
 
-
-    #[Route('/store/product/{id}/details/{slug}', name: 'store_show_product', requirements: ["id" =>"\d+"])]
-    public function showProduct(Request $request, int $id, string $slug): Response
-    {
-
-        $ipClient = $request->server->get('REMOTE_ADDR');
-        $uri = $request->getUri();
-
-        return $this->render('store/details.html.twig', [
-            'controller_name' => 'StoreController',
-            'id' => $id,
-            'slug' => $slug,
-        ]);
-    }
-
     #[Route('/products', name: 'store_products')]
     public function products(): Response
     {
@@ -41,6 +26,26 @@ class StoreController extends AbstractController
 
         return $this->render('store/index.html.twig', [
             'products' => $products
+        ]);
+    }
+
+    #[Route('/store/product/{id}/details/{slug}', name: 'store_show_product', requirements: ["id" =>"\d+"])]
+    public function showProduct(Request $request, int $id, string $slug): Response
+    {
+        $productRepository = $this->em->getRepository(Product::class);
+        $product = $productRepository->find($id);
+
+
+        if(!$product){
+            throw $this->createNotFoundException(
+                'No product found for id : ' . $id
+            );
+        }
+
+        return $this->render('store/details.html.twig', [
+            'controller_name' => 'StoreController',
+            'id' => $id,
+            'product' => $product,
         ]);
     }
 
