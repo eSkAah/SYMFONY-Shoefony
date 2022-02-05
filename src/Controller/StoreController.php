@@ -2,30 +2,50 @@
 
 namespace App\Controller;
 
+use App\Entity\Store\Brand;
 use App\Entity\Store\Product;
+use App\Repository\Store\BrandRepository;
+use App\Repository\Store\ProductRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 
 class StoreController extends AbstractController
 {
-    private $em;
+    private EntityManager $em;
+    private BrandRepository $brandRepository;
+    private ProductRepository $productRepository;
 
-    public function __construct(EntityManagerInterface $em){
+    public function __construct(EntityManagerInterface $em, BrandRepository $brandRepository, ProductRepository $productRepository){
         $this->em = $em;
+        $this->brandRepository = $brandRepository;
+        $this->productRepository = $productRepository;
     }
 
+
     #[Route('/products', name: 'store_products')]
-    public function products(): Response
+    #[Route('/products/{brandId}', name: 'store_products_by_brand', requirements: ["brandId" =>"\d+"])]
+    public function products(?int $brandId): Response
     {
-        $productRepository = $this->em->getRepository(Product::class);
-        $products = $productRepository->findAll();
+        if($brand === null){
+            throw new NotFoundHttpException();
+        }
+
+        if ($brandId) {
+            $products = $this->productRepository->findByBrand($brandId);
+        } else {
+            $products = $this->productRepository->findAll();
+        }
 
         return $this->render('store/index.html.twig', [
-            'products' => $products
+            'products' => $products,
+            'brands' => $this->brandRepository->findAll(),
+            'brandId' => $brandId,
         ]);
     }
 
@@ -34,7 +54,6 @@ class StoreController extends AbstractController
     {
         $productRepository = $this->em->getRepository(Product::class);
         $product = $productRepository->find($id);
-
 
         if(!$product){
             throw $this->createNotFoundException(
@@ -48,5 +67,16 @@ class StoreController extends AbstractController
             'product' => $product,
         ]);
     }
+
+
+    public function listBrand(?int $brandId): Response
+    {
+        return $this->render('store/_list.brands.html.twig', [
+            'brands' =>  $this->brandRepository->findAll(),
+            'brandId' => $brandId
+        ]);
+    }
+
+
 
 }

@@ -6,6 +6,7 @@ use App\Entity\Contact;
 use App\Form\ContactType;
 use App\Mailer\ContactMailer;
 use App\Repository\Store\ProductRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,10 +17,10 @@ use Symfony\Component\Routing\Annotation\Route;
 class HomeController extends AbstractController
 {
     private ContactMailer $mailer;
-    private $em;
+    private EntityManager $em;
     private ProductRepository $productRepository;
 
-    public function __construct(EntityManagerInterface $em , ContactMailer $mailer, ProductRepository $productRepository){
+    public function __construct(EntityManagerInterface $em, ContactMailer $mailer, ProductRepository $productRepository){
         $this->mailer= $mailer;
         $this->em = $em;
         $this->productRepository = $productRepository;
@@ -29,7 +30,8 @@ class HomeController extends AbstractController
     public function index(): Response
     {
         return $this->render('home/index.html.twig', [
-            'lastCreatedProduct' => $this->productRepository->findLastCreatedProducts()
+            'lastCreatedProduct' => $this->productRepository->findLastCreatedProducts(),
+            'mostPopular' => $this->productRepository->findMostPopular()
         ]);
     }
 
