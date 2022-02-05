@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Contact;
 use App\Form\ContactType;
 use App\Mailer\ContactMailer;
+use App\Repository\Store\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,17 +17,19 @@ class HomeController extends AbstractController
 {
     private ContactMailer $mailer;
     private $em;
+    private ProductRepository $productRepository;
 
-    public function __construct(EntityManagerInterface $em , ContactMailer $mailer){
+    public function __construct(EntityManagerInterface $em , ContactMailer $mailer, ProductRepository $productRepository){
         $this->mailer= $mailer;
         $this->em = $em;
+        $this->productRepository = $productRepository;
     }
 
     #[Route('/', name: 'main_homepage', methods:['GET'])]
     public function index(): Response
     {
         return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
+            'lastCreatedProduct' => $this->productRepository->findLastCreatedProducts()
         ]);
     }
 
