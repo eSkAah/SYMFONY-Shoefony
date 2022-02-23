@@ -27,25 +27,24 @@ class StoreController extends AbstractController
         $this->productRepository = $productRepository;
     }
 
-
     #[Route('/products', name: 'store_products')]
     #[Route('/products/{brandId}', name: 'store_products_by_brand', requirements: ["brandId" =>"\d+"])]
     public function products(?int $brandId): Response
     {
-        if($brand === null){
-            throw new NotFoundHttpException();
-        }
 
         if ($brandId) {
+            $brand = $this->brandRepository->find($brandId);
             $products = $this->productRepository->findByBrand($brandId);
         } else {
             $products = $this->productRepository->findAll();
+            $brand = null;
         }
 
         return $this->render('store/index.html.twig', [
             'products' => $products,
             'brands' => $this->brandRepository->findAll(),
             'brandId' => $brandId,
+            'brand' => $brand
         ]);
     }
 
